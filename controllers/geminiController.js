@@ -21,11 +21,13 @@ export const queryGemini = async (req, res) => {
 
     const chunks = await Chunk.find();
 
+    const SIMILARITY_THRESHOLD = 0.7;
     const ranked = chunks
       .map((chunk) => ({
         text: chunk.text,
         score: cosineSimilarity(chunk.embedding, questionEmbedding),
       }))
+      .filter((item) => item.score >= SIMILARITY_THRESHOLD)
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
 
@@ -42,7 +44,7 @@ export const queryGemini = async (req, res) => {
     });
 
     // ✅ Debug: Log the response to confirm the structure
-    console.dir(response, { depth: null });
+    // console.dir(response, { depth: null });
 
     // Extract the answer from the response
     const answer = response?.response?.candidates?.[0]?.content?.parts?.[0]?.text;
