@@ -4,13 +4,15 @@ import dotenv from "dotenv";
 import chunkRoutes from "./routes/chunkRoutes.js";
 import geminiRoutes from "./routes/geminiRoutes.js";
 
-dotenv.config();
+dotenv.config({ path: ".env" });
+
 const app = express();
 app.use(express.json());
 
 app.use("/api/chunks", chunkRoutes);
 app.use("/api/gemini", geminiRoutes);
 
+console.log(process.env.MONGODB_URI)
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
